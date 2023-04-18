@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles.css";
 import { NewTodoForm } from "./NewTodoForm";
 import TodoList from "./TodoList";
 
 export default function App() {
-  // useState is a hook inside of react
-  // useState takes a default value
-  // useState returns two different values [value, function]
+  const [todos, setTodos] = useState(() => {
+    const localValue = localStorage.getItem("ITEMS");
+    if (localValue == null) return [];
 
-  const [todos, setTodos] = useState([]);
+    return JSON.parse(localValue);
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ITEMS", JSON.stringify(todos));
+  }, [todos]);
 
   function addTodo(title) {
     setTodos((currentTodos) => {
@@ -47,7 +52,7 @@ export default function App() {
     <>
       <NewTodoForm onSubmit={addTodo} />
       <h1 className="header">ToDo List</h1>
-      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo}/>
+      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
     </>
   );
 }
