@@ -1,12 +1,62 @@
+import { useState } from "react";
 import "./styles.css";
 
-function App() {
+export default function App() {
+  // useState is a hook inside of react
+  // useState takes a default value
+  // useState returns two different values [value, function]
+  const [newItem, setNewItem] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    setTodos((currentTodos) => {
+      return [
+        ...currentTodos,
+        {
+          id: crypto.randomUUID(),
+          title: newItem,
+          completed: false,
+        },
+      ];
+    });
+
+    setNewItem(""); // clears the input area
+  }
+
+  function toggleTodo(id, completed) {
+    setTodos((currentTodos) => {
+      return currentTodos.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            completed,
+          };
+        }
+        return todo;
+      });
+    });
+  }
+
+  function deleteTodo(id) {
+    setTodos((currentTodos) => {
+      return currentTodos.filter((todo) => todo.id !== id);
+    });
+  }
+
   return (
     <>
-      <form className="new-item-form">
+      {/* on submission, run handleSubmit function */}
+      <form onSubmit={handleSubmit} className="new-item-form">
         <div className="form-row">
           <label htmlFor="item ">New Item</label>
-          <input type="text" id="item" />
+          <input
+            value={newItem}
+            onChange={(e) => setNewItem(e.target.value)}
+            type="text"
+            id="item"
+          />
         </div>
         <button className="btn">Add</button>
       </form>
@@ -14,36 +64,29 @@ function App() {
       <h1 className="header">ToDo List</h1>
       {/* Item */}
       <ul className="list">
-        <li>
-          <label htmlFor="">
-            <input type="checkbox" />
-            Item 1
-          </label>
-          <button className="btn btn-danger">Delete</button>
-        </li>
-      </ul>
-      {/* Item */}
-      <ul className="list">
-        <li>
-          <label htmlFor="">
-            <input type="checkbox" />
-            Item 2
-          </label>
-          <button className="btn btn-danger">Delete</button>
-        </li>
-      </ul>
-      {/* Item */}
-      <ul className="list">
-        <li>
-          <label htmlFor="">
-            <input type="checkbox" />
-            Item 3
-          </label>
-          <button className="btn btn-danger">Delete</button>
-        </li>
+        {todos.length === 0 && "No Todos found"}
+        {todos.map((todo) => {
+          return (
+            <li key={todo.id}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={todo.completed}
+                  // onChange={(e) => toggleTodo(todo.id, e.target.checked)}\
+                  onChange={(e) => toggleTodo(todo.id, e.target.checked)}
+                />
+                {todo.title}
+              </label>
+              <button
+                onClick={() => deleteTodo(todo.id)}
+                className="btn btn-danger"
+              >
+                Delete
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </>
   );
 }
-
-export default App;
