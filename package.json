@@ -1,5 +1,6 @@
 {
   "homepage": "https://maheshhbalwan.github.io/to-do-app-reactjs-tailwindcss/",
+  "name": "to-do-app-reactjs-tailwindcss",
   "private": true,
   "version": "0.0.0",
   "type": "module",
